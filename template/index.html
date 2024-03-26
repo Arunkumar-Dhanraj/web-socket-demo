@@ -6,7 +6,7 @@
     <title>Chat App</title>
   </head>
   <body>
-    <h1>Chat with server</h1>
+    <h1>Chattify</h1>
 
     <form name="form" onsubmit="return sendMessage()">
       <input type="text" name="name" id="name" placeholder="Type your name " />
@@ -24,8 +24,9 @@
     <script>
       // Creating a WebSocket instance to connect to the server
       
-      const ws = new WebSocket("wss://3fb67a88db821.notebooksa.jarvislabs.net/ws");
+      const ws = new WebSocket("wss://db49bfeb10661.notebooksa.jarvislabs.net/ws");
 
+      db49bfeb10661.notebooksa.jarvislabs.net
       // To display messages
       const messages = document.getElementById("showmessage");
 
