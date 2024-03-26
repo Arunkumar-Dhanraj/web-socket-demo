@@ -54,18 +54,18 @@
     }
 
     // Function to fetch previous messages when the page loads
-    async function fetchMessages() {
-      try {
-        const response = await fetch("/messages");
-        const data = await response.json();
-        data.forEach(msg => displayMessage(msg));
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-      }
-    }
+    // async function fetchMessages() {
+    //   try {
+    //     const response = await fetch("/messages");
+    //     const data = await response.json();
+    //     data.forEach(msg => displayMessage(msg));
+    //   } catch (error) {
+    //     console.error("Error fetching messages:", error);
+    //   }
+    // }
 
-    // Call fetchMessages function when the page loads
-    fetchMessages();
+    // // Call fetchMessages function when the page loads
+    // fetchMessages();
   </script>
 </body>
 </html>
