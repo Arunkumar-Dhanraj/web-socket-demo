@@ -18,7 +18,7 @@
 
   <script>
     // Creating a WebSocket instance to connect to the server
-    const ws = new WebSocket("wss://db49bfeb10661.notebooksa.jarvislabs.net/ws");
+    const ws = new WebSocket("wss://03881bd694f81.notebooksa.jarvislabs.net/ws");
 
     // To display messages
     const messages = document.getElementById("showmessage");
@@ -42,11 +42,6 @@
         sender: name.value,
         message: msg.value,
       };
-
-      const p = document.createElement("p");
-      p.textContent = `You: ${msg.value}`;
-
-      messages.appendChild(p);
 
       ws.send(JSON.stringify(outgoingMessage));
 
