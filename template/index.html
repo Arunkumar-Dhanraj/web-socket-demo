@@ -23,14 +23,17 @@
     // To display messages
     const messages = document.getElementById("showmessage");
 
+    // Function to display messages
+    function displayMessage(data) {
+      const p = document.createElement("p");
+      p.textContent = `${data.sender}: ${data.message}`;
+      messages.appendChild(p);
+    }
+
     // Handling incoming messages from the WebSocket server
     ws.onmessage = function(event) {
       const data = JSON.parse(event.data);
-
-      const p = document.createElement("p");
-      p.textContent = `${data.sender}: ${data.message}`;
-
-      messages.appendChild(p);
+      displayMessage(data);
     };
 
     // Function to send a message to the WebSocket server
@@ -43,13 +46,7 @@
         message: msg.value,
       };
 
-      const p = document.createElement("p");
-      p.textContent = `You: ${msg.value}`;
-
-      messages.appendChild(p);
-
       ws.send(JSON.stringify(outgoingMessage));
-
       msg.value = "";
 
       // Preventing the form from submitting
@@ -61,12 +58,7 @@
       try {
         const response = await fetch("/messages");
         const data = await response.json();
-
-        data.forEach(msg => {
-          const p = document.createElement("p");
-          p.textContent = `${msg.sender}: ${msg.message}`;
-          messages.appendChild(p);
-        });
+        data.forEach(msg => displayMessage(msg));
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
