@@ -1,67 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat App</title>
-  </head>
-  <body>
-    <h1>Chattify</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat App</title>
+</head>
+<body>
+  <h1>Chattify</h1>
 
-    <form name="form" onsubmit="return sendMessage()">
-      <input type="text" name="name" id="name" placeholder="Type your name " />
-      <input
-        type="text"
-        placeholder="Type a message..."
-        name="message"
-        id="send"
-      />
-      <button type="submit">Send</button>
-    </form>
+  <form name="form" onsubmit="return sendMessage()">
+    <input type="text" name="name" id="name" placeholder="Type your name" />
+    <input type="text" placeholder="Type a message..." name="message" id="send" />
+    <button type="submit">Send</button>
+  </form>
 
-    <div id="showmessage"></div>
+  <div id="showmessage"></div>
 
-    <script>
-      // Creating a WebSocket instance to connect to the server
-      
-      const ws = new WebSocket("wss://db49bfeb10661.notebooksa.jarvislabs.net/ws");
+  <script>
+    // Creating a WebSocket instance to connect to the server
+    const ws = new WebSocket("wss://db49bfeb10661.notebooksa.jarvislabs.net/ws");
 
-      // db49bfeb10661.notebooksa.jarvislabs.net
-      // To display messages
-      const messages = document.getElementById("showmessage");
+    // To display messages
+    const messages = document.getElementById("showmessage");
 
-      // Handling incoming messages from the WebSocket server
-      ws.onmessage = function (event) {
-        const data = JSON.parse(event.data);
+    // Handling incoming messages from the WebSocket server
+    ws.onmessage = function(event) {
+      const data = JSON.parse(event.data);
 
-        const p = document.createElement("p");
-        p.textContent = `${data.sender}: ${data.message}`;
+      const p = document.createElement("p");
+      p.textContent = `${data.sender}: ${data.message}`;
 
-        messages.appendChild(p);
+      messages.appendChild(p);
+    };
+
+    // Function to send a message to the WebSocket server
+    function sendMessage() {
+      const msg = document.getElementById("send");
+      const name = document.getElementById("name");
+
+      const outgoingMessage = {
+        sender: name.value,
+        message: msg.value,
       };
 
-      // Function to send a message to the WebSocket server
-      function sendMessage() {
-        const msg = document.getElementById("send");
-        const name = document.getElementById("name");
+      const p = document.createElement("p");
+      p.textContent = `You: ${msg.value}`;
 
-        const outgoingMessage = {
-          sender: name.value,
-          message: msg.value,
-        };
+      messages.appendChild(p);
 
-        const p = document.createElement("p");
-        p.textContent = `You: ${msg.value}`;
+      ws.send(JSON.stringify(outgoingMessage));
 
-        messages.appendChild(p);
+      msg.value = "";
 
-        ws.send(JSON.stringify(outgoingMessage));
+      // Preventing the form from submitting
+      return false;
+    }
 
-        msg.value = "";
+    // Function to fetch previous messages when the page loads
+    async function fetchMessages() {
+      try {
+        const response = await fetch("/messages");
+        const data = await response.json();
 
-        // Preventing the form from submitting
-        return false;
+        data.forEach(msg => {
+          const p = document.createElement("p");
+          p.textContent = `${msg.sender}: ${msg.message}`;
+          messages.appendChild(p);
+        });
+      } catch (error) {
+        console.error("Error fetching messages:", error);
       }
-    </script>
-  </body>
+    }
+
+    // Call fetchMessages function when the page loads
+    fetchMessages();
+  </script>
+</body>
 </html>
