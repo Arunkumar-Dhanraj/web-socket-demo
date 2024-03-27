@@ -2,6 +2,7 @@ from fastapi import FastAPI, WebSocket, Request, Response, Cookie
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from uuid import uuid4
+import json
 
 # Creating an instance of the Jinja2Templates class for HTML templates
 templates = Jinja2Templates(directory="template")
@@ -31,17 +32,23 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str = Cookie(None
         
         # Sending previous messages to the client
         for msg in messages:
-            await websocket.send_text(msg)
+               await websocket.send_text(msg)    
         
         # Continuously listening for incoming messages
         while True:
             data = await websocket.receive_text()
             print(f"Received message: {data}")
+
+            you = json.loads(data)
+            you["sender"] = "You"
+            you = json.dumps(you)
             
             # Broadcasting the received message to all connected WebSockets in the session
             for web in websocket_sessions.get(session_id, []):
                 if web != websocket:
                     await web.send_text(data)
+                else:
+                    await web.send_text(you)
             
             # Storing message in the list
             messages.append(data)
